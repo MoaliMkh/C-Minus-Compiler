@@ -125,9 +125,9 @@ def create_symbol_table():
 def write_error(error_token):
     global errors_file_content
     if error_token[0] == 'Unclosed comment':
-        errors_file_content += str(comment_line) + '.\t(' + error_token[1] + ', ' + error_token[0] + ') \n'
+        errors_file_content += str(comment_line) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
     else:
-        errors_file_content += str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ') \n'
+        errors_file_content += str(line_no) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
 
 
 def save_tokens():
@@ -158,6 +158,7 @@ identifiers = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return'
 create_symbol_table()
 file = open('input.txt', 'r')
 content = file.readlines()
+file.close()
 for line in content:
     start = 0
     line_no += 1
@@ -173,7 +174,6 @@ for line in content:
         elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
             write_error(token)
     write_tokens(tokens, line_no)
-file.close()
 
 if comment:
     write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'))
