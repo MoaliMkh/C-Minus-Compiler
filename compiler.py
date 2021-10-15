@@ -2,8 +2,10 @@
 # Mohammad Ali Mohammad Khani / 98102251
 import re
 
+line_no = 0
 comment = False
 comment_str = ''
+comment_line = -1
 start = 0
 letter = '[A-Za-z]'
 digit = '[0-9]'
@@ -15,7 +17,7 @@ errors_file_content = ''
 
 
 def get_next_token(code):
-    global start, comment
+    global start, comment, comment_line
     end = start
     token_type = -1
     char = code[end]
@@ -77,6 +79,7 @@ def get_next_token(code):
                         break
                 elif code[end] == '\n':
                     comment = True
+                    comment_line = line_no
                     break
                 else:
                     end += 1
@@ -121,7 +124,10 @@ def create_symbol_table():
 
 def write_error(error_token):
     global errors_file_content
-    errors_file_content += str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n'
+    if error_token[0] == 'Unclosed comment':
+        errors_file_content += str(comment_line) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n'
+    else:
+        errors_file_content += str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n'
 
 
 def save_tokens():
@@ -145,29 +151,29 @@ def save_symbol_table(identifiers):
     file.close()
 
 
-line_no = 0
 identifiers = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 create_symbol_table()
-with open('input.txt') as file:
-    for line in file:
-        start = 0
-        line_no += 1
-        tokens = []
-        while start != len(line) - 1:
-            token = get_next_token(line)
-            if token[0] == 'ID' or token[0] == 'KEYWORD' or token[0] == 'NUM' or token[0] == 'SYMBOL':
-                tokens.append(token)
-                if token[0] == 'ID' and not token[1] in identifiers:
-                    identifiers.append(token[1])
-            elif token[0] == 'COMMENT' and comment:
-                comment_str += token[1]
-            elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
-                write_error(token)
-        write_tokens(tokens, line_no)
+file = open('input.txt', 'r')
+for line in file:
+    start = 0
+    line_no += 1
+    tokens = []
+    while start != len(line) - 1:
+        token = get_next_token(line)
+        if token[0] == 'ID' or token[0] == 'KEYWORD' or token[0] == 'NUM' or token[0] == 'SYMBOL':
+            tokens.append(token)
+            if token[0] == 'ID' and not token[1] in identifiers:
+                identifiers.append(token[1])
+        elif token[0] == 'COMMENT' and comment:
+            comment_str += token[1]
+        elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
+            write_error(token)
+    write_tokens(tokens, line_no)
+file.close()
 
-    if comment:
-        write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'))
+if comment:
+    write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'))
 
-    save_tokens()
-    save_errors()
-    save_symbol_table(identifiers)
+save_tokens()
+save_errors()
+save_symbol_table(identifiers)
