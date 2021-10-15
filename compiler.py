@@ -94,10 +94,18 @@ def write_tokens(tokens, line_no):
     file.close()
 
 
+# def create_symbol_table():
+#     file = open('symbol_table.txt', 'w')
+#     file.write('1.\tif\n2.\telse\n3.\tvoid\n4.\tint\n5.\trepeat\n6.\tbreak\n7.\tuntil\n8.\treturn\n')
+#     file.close()
+
 def create_symbol_table():
-    file = open('symbol_table.txt', 'w')
-    file.write('1.\tif\n2.\telse\n3.\tvoid\n4.\tint\n5.\trepeat\n6.\tbreak\n7.\tuntil\n8.\treturn\n')
-    file.close()
+     file = open('symbol_table.txt', 'w')
+     list = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
+     for x in range(0, 8):
+         file.write(str(x + 1) + '.' + '\t' + list[x] + '\n')
+     file.close()
+
 
 
 def add_to_symbol_table(identifier):

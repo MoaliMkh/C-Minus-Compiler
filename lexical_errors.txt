@@ -46,3 +46,7 @@
 9.	(cd!, Invalid input)
 11.	(*/, Unmatched comment)
 14.	(@, Invalid input)
+7.	(3d, Invalid number)
+9.	(cd!, Invalid input)
+11.	(*/, Unmatched comment)
+14.	(@, Invalid input)
