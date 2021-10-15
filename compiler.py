@@ -31,6 +31,9 @@ def get_next_token(code):
         end += 1
         while re.match(digit, code[end]):
             end += 1
+        if re.match(letter, code[end]):
+            end += 1
+            token_type = 'Invalid number'
     elif re.match(whitespace, char):
         end += 1
         while re.match(whitespace, code[end]):
@@ -58,7 +61,7 @@ def get_next_token(code):
         token_type = 'Space'
     elif not (re.match(letter or digit or whitespace, char) or char in symbol):
         end += 1
-        token_type = 'Invalid Input'
+        token_type = 'Invalid input'
 
     token_string = code[start: end]
 
@@ -72,7 +75,7 @@ def get_next_token(code):
     return token_type, token_string
 
 
-def write_tokens_in_file(tokens, line_no):
+def write_tokens(tokens, line_no):
     file = open('tokens.txt', 'a')
     if len(tokens) > 0:
         file.write(str(line_no) + '.\t')
@@ -96,9 +99,9 @@ def add_to_symbol_table(identifier):
 # else:
 #     file = open
 
-def write_error(invalid_char):
+def write_error(error_token):
     file = open('lexical_errors.txt', 'a')
-    file.write(str(line_no) + '.\t(' + invalid_char + ', Invalid Input)\n')
+    file.write(str(line_no) + '.\t(' + error_token[0] + ', ' + error_token[1] + ')\n')
 
 
 line_no = 0
@@ -110,11 +113,11 @@ with open('input.txt') as file:
         tokens = []
         while start != len(line) - 1:
             token = get_next_token(line)
-            if token[0] == 'Invalid Input':
-                write_error(token[1])
-            elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
+            if token[0] == 'ID' or token[0] == 'KEYWORD' or token[0] == 'NUM' or token[0] == 'SYMBOL':
                 tokens.append(token)
                 if token[0] == 'ID':
                     add_to_symbol_table(token[1])
+            elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
+                write_error(token)
 
-        write_tokens_in_file(tokens, line_no)
+        write_tokens(tokens, line_no)
