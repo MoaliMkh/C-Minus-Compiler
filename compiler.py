@@ -10,6 +10,8 @@ digit = '[0-9]'
 symbol = [';', ':', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
 whitespace = '[\n\r\t\v\f]'
 keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
+tokens_file_content = ''
+errors_file_content = ''
 
 
 def get_next_token(code):
@@ -100,14 +102,13 @@ def get_next_token(code):
 
 
 def write_tokens(tokens, line_no):
-    file = open('tokens.txt', 'a')
+    global tokens_file_content
     if len(tokens) > 0:
-        file.write(str(line_no) + '.\t')
+        tokens_file_content += str(line_no) + '.\t'
     for token in tokens:
-        file.write('(' + token[0] + ', ' + token[1] + ') ')
+        tokens_file_content += '(' + token[0] + ', ' + token[1] + ') '
     if len(tokens) > 0:
-        file.write('\n')
-    file.close()
+        tokens_file_content += '\n'
 
 
 def create_symbol_table():
@@ -118,29 +119,34 @@ def create_symbol_table():
     file.close()
 
 
-def add_to_symbol_table(identifier, all_identifiers_func):
-    file = open('symbol_table.txt', 'r')
-    line_number = 0
-    for _ in file:
-        line_number += 1
-    file.close()
-    file = open('symbol_table.txt', 'a')
-    if identifier not in all_identifiers_func:
-        file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
-    else:
-        pass
-    file.close()
-    all_identifiers_func.append(identifier)
-    return all_identifiers_func
-
-
 def write_error(error_token):
-    file = open('lexical_errors.txt', 'a')
-    file.write(str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n')
+    global errors_file_content
+    errors_file_content += str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n'
+
+
+def save_tokens():
+    file = open('tokens.txt', 'w')
+    file.write(tokens_file_content)
+    file.close()
+
+
+def save_errors():
+    file = open('lexical_errors.txt', 'w')
+    file.write(errors_file_content)
+    file.close()
+
+
+def save_symbol_table(identifiers):
+    index = 1
+    file = open('symbol_table.txt', 'w')
+    for identifier in identifiers:
+        file.write(str(index) + '.\t' + identifier + '\n')
+        index += 1
+    file.close()
 
 
 line_no = 0
-all_identifiers = []
+identifiers = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 create_symbol_table()
 with open('input.txt') as file:
     for line in file:
@@ -151,13 +157,17 @@ with open('input.txt') as file:
             token = get_next_token(line)
             if token[0] == 'ID' or token[0] == 'KEYWORD' or token[0] == 'NUM' or token[0] == 'SYMBOL':
                 tokens.append(token)
-                if token[0] == 'ID':
-                    all_identifiers = add_to_symbol_table(token[1], all_identifiers)
+                if token[0] == 'ID' and not token[1] in identifiers:
+                    identifiers.append(token[1])
             elif token[0] == 'COMMENT' and comment:
                 comment_str += token[1]
             elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
                 write_error(token)
-
         write_tokens(tokens, line_no)
+
     if comment:
-        write_error(('Unclosed comment', comment_str[0:min(7, len(comment_str) - 1)] + '...'))
+        write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'))
+
+    save_tokens()
+    save_errors()
+    save_symbol_table(identifiers)
