@@ -101,6 +101,7 @@ def add_to_symbol_table(identifier):
             pass
         else:
             file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
+    file.close()
 
 
 # else:
