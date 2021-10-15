@@ -3,6 +3,7 @@
 import re
 
 comment = False
+comment_str = ''
 start = 0
 letter = '[A-Za-z]'
 digit = '[0-9]'
@@ -12,10 +13,12 @@ keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 
 
 def get_next_token(code):
-    global start
+    global start, comment
     end = start
     token_type = -1
     char = code[end]
+    if comment:
+        pass
     if re.match(letter, char):
         token_type = 'ID'
         end += 1
@@ -61,6 +64,9 @@ def get_next_token(code):
                     end += 1
                     if code[end] == '/':
                         break
+                elif code[end] == '\n':
+                    comment = True
+                    break
                 else:
                     end += 1
         else:
@@ -148,7 +154,11 @@ with open('input.txt') as file:
                 tokens.append(token)
                 if token[0] == 'ID':
                     add_to_symbol_table(token[1])
+            elif  token[0] == 'COMMENT' and comment:
+                comment += token[1]
             elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
                 write_error(token)
 
         write_tokens(tokens, line_no)
+        if comment:
+            write_error(('Unclosed comment', comment_str[0:max(7, len(comment_str) - 1)]))
