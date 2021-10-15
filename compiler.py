@@ -1,16 +1,18 @@
 # Mohammad Hossein Haji Seyyed Soleyman / 98105687
 # Mohammad Ali Mohammad Khani / 98102251
-import re
 
 line_no = 0
 comment = False
 comment_str = ''
 comment_line = -1
 start = 0
-letter = '[A-Za-z]'
-digit = '[0-9]'
+letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+          'w', 'x', 'y', 'z',
+          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+          'W', 'X', 'Y', 'Z']
+digit = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 symbol = [';', ':', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
-whitespace = '[\n\r\t\v\f]'
+whitespace = ['\n', '\r', '\t', '\v', '\f']
 keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 tokens_file_content = ''
 errors_file_content = ''
@@ -31,12 +33,12 @@ def get_next_token(code):
                     break
             if code[end] == '\n' or end == len(code):
                 break
-    if re.match(letter, char):
+    if char in letter:
         token_type = 'ID'
         end += 1
-        while re.match(letter or digit, code[end]):
+        while code[end] in letter or code[end] in digit:
             end += 1
-        if not (re.match(whitespace, code[end]) or code[end] in symbol or code[end] == ' '):
+        if not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
             end += 1
             token_type = 'Invalid input'
     elif char in symbol:
@@ -47,20 +49,21 @@ def get_next_token(code):
         elif char == '*' and code[end] == '/':
             end += 1
             token_type = 'Unmatched comment'
-    elif re.match(digit, char):
+    elif char in digit:
         token_type = 'NUM'
         end += 1
-        while re.match(digit, code[end]):
+        while code[end] in digit:
             end += 1
-        if re.match(letter, code[end]):
+        if code[end] in letter:
             end += 1
             token_type = 'Invalid number'
-        elif not (re.match(whitespace, code[end]) or code[end] in symbol or code[end] == ' '):
+        elif not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
             end += 1
             token_type = 'Invalid input'
-    elif re.match(whitespace, char):
+    elif char in whitespace:
+        token_type = 'WHITESPACE'
         end += 1
-        while re.match(whitespace, code[end]):
+        while code[end] in whitespace:
             end += 1
     elif char == '/':
         token_type = 'COMMENT'
