@@ -53,10 +53,12 @@ def get_next_token(code):
                     break
                 else:
                     end += 1
-    else:
+    elif char == ' ':
         end += 1
-        start += 1
-        return None
+        token_type = 'Space'
+    elif not (re.match(letter or digit or whitespace, char) or char in symbol):
+        end += 1
+        token_type = 'Invalid Input'
 
     token_string = code[start: end]
 
@@ -83,7 +85,7 @@ def write_tokens_in_file(tokens, line_no):
 
 def create_symbol_table():
     file = open('symbol_table.txt', 'w')
-    file.write('1.	if\n2.	else\n3.	void\n4.	int\n5.	repeat\n6.	break\n7.	until\n8.	return')
+    file.write('1.\tif\n2.\telse\n3.\tvoid\n4.\tint\n5.\trepeat\n6.\tbreak\n7.\tuntil\n8.\treturn')
     file.close()
 
 
@@ -93,6 +95,10 @@ def add_to_symbol_table(identifier):
 
 # else:
 #     file = open
+
+def write_error(invalid_char):
+    file = open('lexical_errors.txt', 'a')
+    file.write(str(line_no) + '.\t(' + invalid_char + ', Invalid Input)\n')
 
 
 line_no = 0
@@ -104,8 +110,11 @@ with open('input.txt') as file:
         tokens = []
         while start != len(line) - 1:
             token = get_next_token(line)
-            if (token is not None) and not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE'):
+            if token[0] == 'Invalid Input':
+                write_error(token[1])
+            elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
                 tokens.append(token)
                 if token[0] == 'ID':
                     add_to_symbol_table(token[1])
+
         write_tokens_in_file(tokens, line_no)
