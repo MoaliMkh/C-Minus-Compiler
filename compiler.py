@@ -18,7 +18,15 @@ def get_next_token(code):
     token_type = -1
     char = code[end]
     if comment:
-        pass
+        token_type = 'COMMENT'
+        while True:
+            if char == '*':
+                end += 1
+                if code[end] == '/':
+                    comment = False
+                    break
+            if code[end] == '\n' or end == len(code):
+                break
     if re.match(letter, char):
         token_type = 'ID'
         end += 1
@@ -63,6 +71,7 @@ def get_next_token(code):
                 if code[end] == '*':
                     end += 1
                     if code[end] == '/':
+                        end += 1
                         break
                 elif code[end] == '\n':
                     comment = True
@@ -145,10 +154,10 @@ with open('input.txt') as file:
                 if token[0] == 'ID':
                     all_identifiers = add_to_symbol_table(token[1], all_identifiers)
             elif token[0] == 'COMMENT' and comment:
-                comment += token[1]
+                comment_str += token[1]
             elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
                 write_error(token)
 
         write_tokens(tokens, line_no)
-        if comment:
-            write_error(('Unclosed comment', comment_str[0:max(7, len(comment_str) - 1)]))
+    if comment:
+        write_error(('Unclosed comment', comment_str[0:min(7, len(comment_str) - 1)] + '...'))
