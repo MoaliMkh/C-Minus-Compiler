@@ -103,12 +103,15 @@ def create_symbol_table():
 def add_to_symbol_table(identifier):
     file = open('symbol_table.txt', 'a+')
     line_number = 0
+    file_lines = []
     for line in file:
         line_number += 1
-        if identifier in line:
-            pass
-        else:
-            file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
+        key = line.split("\t")
+        file_lines.append(key[1])
+    if identifier in file_lines:
+        pass
+    else:
+        file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")       
     file.close()
 
 

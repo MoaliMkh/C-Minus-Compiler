@@ -5,4 +5,17 @@
 5.	repeat
 6.	break
 7.	until
-8.	return
+8.	return1.	main
+1.	a
+1.	a
+1.	a
+1.	a
+1.	cde
+1.	a
+1.	b
+1.	a
+1.	e
+1.	b
+1.	a
+1.	cde
+1.	cde
