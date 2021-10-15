@@ -3,7 +3,6 @@
 import re
 
 start = 0
-id_no = 9
 letter = '[A-Za-z]'
 digit = '[0-9]'
 symbol = [';', ':', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
@@ -93,7 +92,7 @@ def create_symbol_table():
 
 
 def add_to_symbol_table(identifier):
-    file = open('symbol_table.txt', 'a')
+    file = open('symbol_table.txt', 'a+')
     line_number = 0
     for line in file:
         line_number += 1
@@ -103,9 +102,6 @@ def add_to_symbol_table(identifier):
             file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
     file.close()
 
-
-# else:
-#     file = open
 
 def write_error(error_token):
     file = open('lexical_errors.txt', 'a')
