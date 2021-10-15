@@ -72,20 +72,13 @@ def write_tokens_in_file(tokens, line_no):
     file.close()
 
 
-line_no = 0
-
-
 def create_symbol_table():
     file = open('symbol_table.txt', 'w')
     file.write('1.	if\n2.	else\n3.	void\n4.	int\n5.	repeat\n6.	break\n7.	until\n8.	return')
     file.close()
 
 
-create_symbol_table()
-
-
 def add_to_symbol_table(identifier):
-    # if :
     pass
 
 
@@ -93,6 +86,8 @@ def add_to_symbol_table(identifier):
 #     file = open
 
 
+line_no = 0
+create_symbol_table()
 with open('input.txt') as file:
     for line in file:
         start = 0
