@@ -115,25 +115,21 @@ def create_symbol_table():
     file.close()
 
 
-def add_to_symbol_table(identifier):
+
+def add_to_symbol_table(identifier, all_identifiers_func):
     file = open('symbol_table.txt', 'r')
-    keywords = []
     line_number = 0
     for line in file:
         line_number += 1
-        if (line_number >= 10):
-            key = line[9:]
-        else:
-            key = line[8:]
-        keywords.append(key)
-    print(keywords)
     file.close()
     file = open('symbol_table.txt', 'a')
-    if identifier in keywords:
-        pass
-    else:
+    if identifier not in all_identifiers_func:
         file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
-    file.close()
+    else:
+        pass
+    file.close()  
+    all_identifiers_func.append(identifier)     
+    return all_identifiers_func
 
 
 def write_error(error_token):
@@ -142,6 +138,7 @@ def write_error(error_token):
 
 
 line_no = 0
+all_identifiers = []
 create_symbol_table()
 with open('input.txt') as file:
     for line in file:
@@ -153,7 +150,7 @@ with open('input.txt') as file:
             if token[0] == 'ID' or token[0] == 'KEYWORD' or token[0] == 'NUM' or token[0] == 'SYMBOL':
                 tokens.append(token)
                 if token[0] == 'ID':
-                    add_to_symbol_table(token[1])
+                    all_identifiers = add_to_symbol_table(token[1], all_identifiers)
             elif  token[0] == 'COMMENT' and comment:
                 comment += token[1]
             elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
