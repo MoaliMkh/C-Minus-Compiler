@@ -100,28 +100,35 @@ def write_tokens(tokens, line_no):
 #     file.close()
 
 def create_symbol_table():
-     file = open('symbol_table.txt', 'w')
-     list = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
-     for x in range(0, 8):
-         file.write(str(x + 1) + '.' + '\t' + list[x] + '\n')
-     file.close()
+    file = open('symbol_table.txt', 'w')
+    list = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
+    for x in range(0, 8):
+        file.write(str(x + 1) + '.' + '\t' + list[x] + '\n')
+
+    file.close()
 
 
 
 def add_to_symbol_table(identifier):
-    file = open('symbol_table.txt', 'a+')
-    file_lines = file.readlines()
-    line_number = len(file_lines)
+    file = open('symbol_table.txt', 'r')
     keywords = []
-    for line in file_lines:
-        key = line.split("\t")
-        keywords.append(key[1])
+    line_number = 0
+    for line in file:
+        line_number += 1
+        if(line_number >= 10):
+            key = line[9:]
+        else:
+            key = line[8:]
+        keywords.append(key)
     print(keywords)
+    file.close()
+    file = open('symbol_table.txt', 'a')
     if identifier in keywords:
         pass
     else:
-        file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")       
-    file.close()
+        file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
+    file.close()       
+    
 
 
 def write_error(error_token):
