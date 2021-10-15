@@ -24,7 +24,7 @@ def get_next_token(code):
     elif char in symbol:
         token_type = 'SYMBOL'
         end += 1
-        if code[end] == '=' and code[end] == code[end + 1]:
+        if code[end] == '=' and code[end] == code[end - 1]:
             end += 1
     elif re.match(digit, char):
         token_type = 'NUM'
@@ -44,6 +44,15 @@ def get_next_token(code):
                 end += 1
         elif code[end] == '*':
             end += 1
+            while True:
+                if code[end] == '*':
+                    end += 1
+                    if code[end] == '/':
+                        break
+                elif code[end] == '\n':
+                    break
+                else:
+                    end += 1
     else:
         end += 1
         start += 1
