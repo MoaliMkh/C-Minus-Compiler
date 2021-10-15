@@ -1,15 +1,17 @@
-/* test case */
-void main(void){
-	int prod;
-	int i ;
-		prod = 1;
-		i = 1;
+int min(voi){
 	repeat {
-		prod = i * prod ;
-		i = i + 2;
-	} until (i < 7)
-		output(prod);
-		return;
-
-
+		x = 23apple;
+		mk3 = x + 1;
+		if (mk3 == 52) {
+			b =# 32;
+			return;
+		}
+		break;}
+	} until (arr[2milk])
+	#this = 2;
+	return;;!
 }
+// end of the code
+/* end of end of the code
+// hmmmmmm
+@#$#%%$*/

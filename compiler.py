@@ -14,8 +14,6 @@ digit = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 symbol = [';', ':', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
 whitespace = ['\n', '\r', '\t', '\v', '\f']
 keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
-tokens_file_content = ''
-errors_file_content = ''
 
 
 def get_next_token(code):
@@ -26,74 +24,82 @@ def get_next_token(code):
     if comment:
         token_type = 'COMMENT'
         while True:
-            if char == '*':
+            if code[end] == '*':
                 end += 1
                 if code[end] == '/':
+                    end += 1
                     comment = False
                     break
             if code[end] == '\n' or end == len(code):
                 break
-    if char in letter:
-        token_type = 'ID'
-        end += 1
-        while code[end] in letter or code[end] in digit:
             end += 1
-        if not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+    else:
+        if char in letter:
+            token_type = 'ID'
             end += 1
-            token_type = 'Invalid input'
-    elif char in symbol:
-        token_type = 'SYMBOL'
-        end += 1
-        if code[end] == '=' and code[end] == code[end - 1]:
-            end += 1
-        elif char == '*' and code[end] == '/':
-            end += 1
-            token_type = 'Unmatched comment'
-    elif char in digit:
-        token_type = 'NUM'
-        end += 1
-        while code[end] in digit:
-            end += 1
-        if code[end] in letter:
-            end += 1
-            token_type = 'Invalid number'
-        elif not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
-            end += 1
-            token_type = 'Invalid input'
-    elif char in whitespace:
-        token_type = 'WHITESPACE'
-        end += 1
-        while code[end] in whitespace:
-            end += 1
-    elif char == '/':
-        token_type = 'COMMENT'
-        end += 1
-        if code[end] == '/':
-            end += 1
-            while code[end] != '\n':
+            while code[end] in letter or code[end] in digit:
                 end += 1
-        elif code[end] == '*':
+            if not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+                end += 1
+                token_type = 'Invalid input'
+        elif char in symbol:
+            token_type = 'SYMBOL'
             end += 1
-            while True:
-                if code[end] == '*':
+            if char == '*' and code[end] == '/':
+                end += 1
+                token_type = 'Unmatched comment'
+            elif not (code[end] in letter or code[end] in digit or code[end] in whitespace
+                      or code[end] in symbol or code[end] == ' ' or code[end] == '/'):
+                end += 1
+                token_type = 'Invalid input'
+            elif code[end] == '=' and code[end] == code[end - 1]:
+                end += 1
+
+        elif char in digit:
+            token_type = 'NUM'
+            end += 1
+            while code[end] in digit:
+                end += 1
+            if code[end] in letter:
+                end += 1
+                token_type = 'Invalid number'
+            elif not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+                end += 1
+                token_type = 'Invalid input'
+        elif char in whitespace:
+            token_type = 'WHITESPACE'
+            end += 1
+            while code[end] in whitespace:
+                end += 1
+        elif char == '/':
+            token_type = 'COMMENT'
+            end += 1
+            if code[end] == '/':
+                end += 1
+                while code[end] != '\n':
                     end += 1
-                    if code[end] == '/':
+            elif code[end] == '*':
+                end += 1
+                while True:
+                    if code[end] == '*':
                         end += 1
+                        if code[end] == '/':
+                            end += 1
+                            break
+                    elif code[end] == '\n':
+                        comment = True
+                        comment_line = line_no
                         break
-                elif code[end] == '\n':
-                    comment = True
-                    comment_line = line_no
-                    break
-                else:
-                    end += 1
-        else:
+                    else:
+                        end += 1
+            else:
+                token_type = 'Invalid input'
+        elif char == ' ':
+            end += 1
+            token_type = 'Space'
+        elif not (char in letter or char in digit or char in whitespace or char in symbol):
+            end += 1
             token_type = 'Invalid input'
-    elif char == ' ':
-        end += 1
-        token_type = 'Space'
-    elif not (re.match(letter or digit or whitespace, char) or char in symbol):
-        end += 1
-        token_type = 'Invalid input'
 
     token_string = code[start: end]
 
@@ -107,39 +113,38 @@ def get_next_token(code):
     return token_type, token_string
 
 
-def write_tokens(tokens, line_no):
-    global tokens_file_content
+def write_tokens(tokens, line_no, tokens_file_content):
     if len(tokens) > 0:
         tokens_file_content += str(line_no) + '.\t'
     for token in tokens:
         tokens_file_content += '(' + token[0] + ', ' + token[1] + ') '
     if len(tokens) > 0:
         tokens_file_content += '\n'
+    return tokens_file_content
 
 
 def create_symbol_table():
     file = open('symbol_table.txt', 'w')
     for x in range(0, 8):
         file.write(str(x + 1) + '.' + '\t' + keyword[x] + '\n')
-
     file.close()
 
 
-def write_error(error_token):
-    global errors_file_content
+def write_error(error_token, errors_file_content):
     if error_token[0] == 'Unclosed comment':
         errors_file_content += str(comment_line) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
     else:
         errors_file_content += str(line_no) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
+    return errors_file_content
 
 
-def save_tokens():
+def save_tokens(tokens_file_content):
     file = open('tokens.txt', 'w')
     file.write(tokens_file_content)
     file.close()
 
 
-def save_errors():
+def save_errors(errors_file_content):
     file = open('lexical_errors.txt', 'w')
     if len(errors_file_content) > 0:
         file.write(errors_file_content)
@@ -157,6 +162,8 @@ def save_symbol_table(identifiers):
     file.close()
 
 
+tokens_file_content = ''
+errors_file_content = ''
 identifiers = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 create_symbol_table()
 file = open('input.txt', 'r')
@@ -164,6 +171,8 @@ content = file.readlines()
 file.close()
 for line in content:
     start = 0
+    if line[-1] != '\n':
+        line += '\n'
     line_no += 1
     tokens = []
     while start != len(line) - 1:
@@ -175,12 +184,12 @@ for line in content:
         elif token[0] == 'COMMENT' and comment:
             comment_str += token[1]
         elif not (token[0] == 'COMMENT' or token[0] == 'WHITESPACE' or token[0] == 'Space'):
-            write_error(token)
-    write_tokens(tokens, line_no)
+            errors_file_content = write_error(token, errors_file_content)
+    tokens_file_content = write_tokens(tokens, line_no, tokens_file_content)
 
 if comment:
-    write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'))
+    errors_file_content = write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'), errors_file_content)
 
-save_tokens()
-save_errors()
+save_tokens(tokens_file_content)
+save_errors(errors_file_content)
 save_symbol_table(identifiers)
