@@ -125,9 +125,9 @@ def create_symbol_table():
 def write_error(error_token):
     global errors_file_content
     if error_token[0] == 'Unclosed comment':
-        errors_file_content += str(comment_line) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n'
+        errors_file_content += str(comment_line) + '.\t(' + error_token[1] + ', ' + error_token[0] + ') \n'
     else:
-        errors_file_content += str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n'
+        errors_file_content += str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ') \n'
 
 
 def save_tokens():
@@ -138,7 +138,10 @@ def save_tokens():
 
 def save_errors():
     file = open('lexical_errors.txt', 'w')
-    file.write(errors_file_content)
+    if len(errors_file_content) > 0:
+        file.write(errors_file_content)
+    else:
+        file.write('There is no lexical error.')
     file.close()
 
 
@@ -154,7 +157,8 @@ def save_symbol_table(identifiers):
 identifiers = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 create_symbol_table()
 file = open('input.txt', 'r')
-for line in file:
+content = file.readlines()
+for line in content:
     start = 0
     line_no += 1
     tokens = []
