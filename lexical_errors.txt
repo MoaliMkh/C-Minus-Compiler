@@ -1,3 +1,4 @@
 7.	(Invalid number, 3d)
-9.	(Invalid input, !)
+9.	(Invalid input, cd!)
+11.	(Unmatched comment, */)
 14.	(Invalid input, @)

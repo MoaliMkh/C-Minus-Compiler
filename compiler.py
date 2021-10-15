@@ -20,11 +20,17 @@ def get_next_token(code):
         end += 1
         while re.match(letter or digit, code[end]):
             end += 1
+        if not (re.match(whitespace, code[end]) or code[end] in symbol or code[end] == ' '):
+            end += 1
+            token_type = 'Invalid input'
     elif char in symbol:
         token_type = 'SYMBOL'
         end += 1
         if code[end] == '=' and code[end] == code[end - 1]:
             end += 1
+        elif char == '*' and code[end] == '/':
+            end += 1
+            token_type = 'Unmatched comment'
     elif re.match(digit, char):
         token_type = 'NUM'
         end += 1
@@ -33,6 +39,9 @@ def get_next_token(code):
         if re.match(letter, code[end]):
             end += 1
             token_type = 'Invalid number'
+        elif not (re.match(whitespace, code[end]) or code[end] in symbol or code[end] == ' '):
+            end += 1
+            token_type = 'Invalid input'
     elif re.match(whitespace, char):
         end += 1
         while re.match(whitespace, code[end]):
@@ -105,7 +114,7 @@ def add_to_symbol_table(identifier):
 
 def write_error(error_token):
     file = open('lexical_errors.txt', 'a')
-    file.write(str(line_no) + '.\t(' + error_token[0] + ', ' + error_token[1] + ')\n')
+    file.write(str(line_no) + '.\t(' + error_token[1] + ', ' + error_token[0] + ')\n')
 
 
 line_no = 0
