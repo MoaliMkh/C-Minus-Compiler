@@ -2,6 +2,7 @@
 # Mohammad Ali Mohammad Khani / 98102251
 import re
 
+comment = False
 start = 0
 letter = '[A-Za-z]'
 digit = '[0-9]'
@@ -60,10 +61,10 @@ def get_next_token(code):
                     end += 1
                     if code[end] == '/':
                         break
-                elif code[end] == '\n':
-                    break
                 else:
                     end += 1
+        else:
+            token_type = 'Invalid input'
     elif char == ' ':
         end += 1
         token_type = 'Space'
@@ -108,14 +109,13 @@ def create_symbol_table():
     file.close()
 
 
-
 def add_to_symbol_table(identifier):
     file = open('symbol_table.txt', 'r')
     keywords = []
     line_number = 0
     for line in file:
         line_number += 1
-        if(line_number >= 10):
+        if (line_number >= 10):
             key = line[9:]
         else:
             key = line[8:]
@@ -127,8 +127,7 @@ def add_to_symbol_table(identifier):
         pass
     else:
         file.write(str(line_number + 1) + "." + "\t" + identifier + "\n")
-    file.close()       
-    
+    file.close()
 
 
 def write_error(error_token):
