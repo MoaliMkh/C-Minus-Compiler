@@ -2,6 +2,7 @@
 # Mohammad Ali Mohammad Khani / 98102251
 
 line_no = 0
+first_error = True
 comment = False
 comment_str = ''
 comment_line = -1
@@ -137,10 +138,15 @@ def create_symbol_table():
 
 
 def write_error(error_token, errors_file_content):
-    if error_token[0] == 'Unclosed comment':
-        errors_file_content += str(comment_line) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
+    global first_error
+    if first_error:
+        if error_token[0] == 'Unclosed comment':
+            errors_file_content += str(comment_line) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
+        else:
+            errors_file_content += str(line_no) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
+        first_error = False
     else:
-        errors_file_content += str(line_no) + '.\t(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
+        errors_file_content = errors_file_content[: -1] + '(' + str(error_token[1]) + ', ' + str(error_token[0]) + ') \n'
     return errors_file_content
 
 
@@ -175,12 +181,15 @@ create_symbol_table()
 file = open('input.txt', 'r')
 content = file.readlines()
 file.close()
+
 for line in content:
     start = 0
+    first_error = True
     if line[-1] != '\n':
         line += '\n'
     line_no += 1
     tokens = []
+
     while start != len(line) - 1:
         token = get_next_token(line)
         if token[0] == 'ID' or token[0] == 'KEYWORD' or token[0] == 'NUM' or token[0] == 'SYMBOL':
