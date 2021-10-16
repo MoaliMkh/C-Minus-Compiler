@@ -208,7 +208,7 @@ for line in content:
     tokens_file_content = write_tokens(tokens, line_no, tokens_file_content)
 
 if comment:
-    errors_file_content = write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str) - 1)] + '...'), errors_file_content)
+    errors_file_content = write_error(('Unclosed comment', comment_str[0: min(7, len(comment_str))] + '...'), errors_file_content)
 
 save_tokens(tokens_file_content)
 save_errors(errors_file_content)
