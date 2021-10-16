@@ -42,18 +42,20 @@ def get_next_token(code):
             if not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
                 end += 1
                 token_type = 'Invalid input'
+
         elif char in symbol:
             token_type = 'SYMBOL'
             end += 1
             if char == '*' and code[end] == '/':
                 end += 1
                 token_type = 'Unmatched comment'
-            elif not (code[end] in letter or code[end] in digit or code[end] in whitespace
-                      or code[end] in symbol or code[end] == ' ' or code[end] == '/'):
-                end += 1
-                token_type = 'Invalid input'
-            elif code[end] == '=' and code[end] == code[end - 1]:
-                end += 1
+            elif char == '=':
+                if code[end] == '=':
+                    end += 1
+                elif not (code[end] in letter or code[end] in digit or code[end] in whitespace
+                          or code[end] in symbol or code[end] == ' ' or code[end] == '/'):
+                    end += 1
+                    token_type = 'Invalid input'
 
         elif char in digit:
             token_type = 'NUM'
@@ -66,11 +68,13 @@ def get_next_token(code):
             elif not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
                 end += 1
                 token_type = 'Invalid input'
+
         elif char in whitespace:
             token_type = 'WHITESPACE'
             end += 1
             while code[end] in whitespace:
                 end += 1
+
         elif char == '/':
             token_type = 'COMMENT'
             end += 1
@@ -94,9 +98,11 @@ def get_next_token(code):
                         end += 1
             else:
                 token_type = 'Invalid input'
+
         elif char == ' ':
             end += 1
             token_type = 'Space'
+
         elif not (char in letter or char in digit or char in whitespace or char in symbol):
             end += 1
             token_type = 'Invalid input'
