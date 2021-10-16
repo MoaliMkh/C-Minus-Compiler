@@ -12,7 +12,7 @@ letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
           'W', 'X', 'Y', 'Z']
 digit = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-symbol = [';', ':', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
+symbol = [';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
 whitespace = ['\n', '\r', '\t', '\v', '\f']
 keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 
@@ -22,6 +22,7 @@ def get_next_token(code):
     end = start
     token_type = -1
     char = code[end]
+
     if comment:
         token_type = 'COMMENT'
         while True:
@@ -47,9 +48,13 @@ def get_next_token(code):
         elif char in symbol:
             token_type = 'SYMBOL'
             end += 1
-            if char == '*' and code[end] == '/':
-                end += 1
-                token_type = 'Unmatched comment'
+            if char == '*':
+                if code[end] == '/':
+                    end += 1
+                    token_type = 'Unmatched comment'
+                elif not (code[end] in letter or code[end] in digit or code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+                    end += 1
+                    token_type = 'Invalid input'
             elif char == '=':
                 if code[end] == '=':
                     end += 1
