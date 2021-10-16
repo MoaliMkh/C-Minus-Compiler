@@ -78,8 +78,6 @@ def get_next_token(code):
         elif char in whitespace:
             token_type = 'WHITESPACE'
             end += 1
-            while code[end] in whitespace:
-                end += 1
 
         elif char == '/':
             token_type = 'COMMENT'
