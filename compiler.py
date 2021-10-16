@@ -17,10 +17,6 @@ whitespace = ['\n', '\r', '\t', '\v', '\f']
 keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 
 
-def is_invalid(char):
-    return not (char in letter or char in digit or char in symbol or char in whitespace or char == ' ')
-
-
 def get_next_token(code):
     global start, comment, comment_line
     end = start
@@ -45,7 +41,7 @@ def get_next_token(code):
             end += 1
             while code[end] in letter or code[end] in digit:
                 end += 1
-            if is_invalid(code[end]):
+            if not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
                 end += 1
                 token_type = 'Invalid input'
 
@@ -56,13 +52,14 @@ def get_next_token(code):
                 if code[end] == '/':
                     end += 1
                     token_type = 'Unmatched comment'
-                elif is_invalid(code[end]):
+                elif not (code[end] in letter or code[end] in digit or code[end] in whitespace or code[end] in symbol or code[end] == ' '):
                     end += 1
                     token_type = 'Invalid input'
             elif char == '=':
                 if code[end] == '=':
                     end += 1
-                elif is_invalid(code[end]):
+                elif not (code[end] in letter or code[end] in digit or code[end] in whitespace
+                          or code[end] in symbol or code[end] == ' ' or code[end] == '/'):
                     end += 1
                     token_type = 'Invalid input'
 
@@ -74,13 +71,15 @@ def get_next_token(code):
             if code[end] in letter:
                 end += 1
                 token_type = 'Invalid number'
-            elif is_invalid(code[end]):
+            elif not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
                 end += 1
                 token_type = 'Invalid input'
 
         elif char in whitespace:
             token_type = 'WHITESPACE'
             end += 1
+            # while code[end] in whitespace:
+            #     end += 1
 
         elif char == '/':
             token_type = 'COMMENT'
@@ -110,7 +109,7 @@ def get_next_token(code):
             end += 1
             token_type = 'Space'
 
-        elif not is_invalid(char):
+        elif not (char in letter or char in digit or char in whitespace or char in symbol):
             end += 1
             token_type = 'Invalid input'
 
