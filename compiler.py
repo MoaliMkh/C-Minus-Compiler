@@ -177,6 +177,9 @@ def save_symbol_table(identifiers):
     file.close()
 
 
+def x:
+    initiate_Program()
+
 tokens_file_content = ''
 errors_file_content = ''
 identifiers = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
@@ -211,3 +214,4 @@ if comment:
 save_tokens(tokens_file_content)
 save_errors(errors_file_content)
 save_symbol_table(identifiers)
+
