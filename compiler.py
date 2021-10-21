@@ -7,14 +7,14 @@ comment = False
 comment_str = ''
 comment_line = -1
 start = 0
-letter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
           'w', 'x', 'y', 'z',
           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
           'W', 'X', 'Y', 'Z']
-digit = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-symbol = [';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
-whitespace = ['\n', '\r', '\t', '\v', '\f']
-keyword = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
+digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+symbols = [';', ':', ',', '[', ']', '(', ')', '{', '}', '+', '-', '*', '=', '<']
+whitespaces = ['\n', '\r', '\t', '\v', '\f']
+keywords = ['if', 'else', 'void', 'int', 'repeat', 'break', 'until', 'return']
 
 
 def get_next_token(code):
@@ -36,46 +36,46 @@ def get_next_token(code):
                 break
             end += 1
     else:
-        if char in letter:
+        if char in letters:
             token_type = 'ID'
             end += 1
-            while code[end] in letter or code[end] in digit:
+            while code[end] in letters or code[end] in digits:
                 end += 1
-            if not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+            if not (code[end] in whitespaces or code[end] in symbols or code[end] == ' '):
                 end += 1
                 token_type = 'Invalid input'
 
-        elif char in symbol:
+        elif char in symbols:
             token_type = 'SYMBOL'
             end += 1
             if char == '*':
                 if code[end] == '/':
                     end += 1
                     token_type = 'Unmatched comment'
-                elif not (code[end] in letter or code[end] in digit or code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+                elif not (code[end] in letters or code[end] in digits or code[end] in whitespaces or code[end] in symbols or code[end] == ' '):
                     end += 1
                     token_type = 'Invalid input'
             elif char == '=':
                 if code[end] == '=':
                     end += 1
-                elif not (code[end] in letter or code[end] in digit or code[end] in whitespace
-                          or code[end] in symbol or code[end] == ' ' or code[end] == '/'):
+                elif not (code[end] in letters or code[end] in digits or code[end] in whitespaces
+                          or code[end] in symbols or code[end] == ' ' or code[end] == '/'):
                     end += 1
                     token_type = 'Invalid input'
 
-        elif char in digit:
+        elif char in digits:
             token_type = 'NUM'
             end += 1
-            while code[end] in digit:
+            while code[end] in digits:
                 end += 1
-            if code[end] in letter:
+            if code[end] in letters:
                 end += 1
                 token_type = 'Invalid number'
-            elif not (code[end] in whitespace or code[end] in symbol or code[end] == ' '):
+            elif not (code[end] in whitespaces or code[end] in symbols or code[end] == ' '):
                 end += 1
                 token_type = 'Invalid input'
 
-        elif char in whitespace:
+        elif char in whitespaces:
             token_type = 'WHITESPACE'
             end += 1
 
@@ -107,13 +107,13 @@ def get_next_token(code):
             end += 1
             token_type = 'Space'
 
-        elif not (char in letter or char in digit or char in whitespace or char in symbol):
+        elif not (char in letters or char in digits or char in whitespaces or char in symbols):
             end += 1
             token_type = 'Invalid input'
 
     token_string = code[start: end]
 
-    if token_type == 'ID' and token_string in keyword:
+    if token_type == 'ID' and token_string in keywords:
         token_type = 'KEYWORD'
 
     start += len(token_string)
@@ -136,7 +136,7 @@ def write_tokens(tokens, line_no, tokens_file_content):
 def create_symbol_table():
     file = open('symbol_table.txt', 'w')
     for x in range(0, 8):
-        file.write(str(x + 1) + '.' + '\t' + keyword[x] + '\n')
+        file.write(str(x + 1) + '.' + '\t' + keywords[x] + '\n')
     file.close()
 
 
