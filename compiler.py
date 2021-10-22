@@ -100,8 +100,12 @@ def get_next_token(code):
                         break
                     else:
                         end += 1
+            elif not (code[end] in letters or code[end] in digits or code[end] in whitespaces or code[end] in symbols):
+                end += 1
+                token_type = 'Invalid input'
             else:
                 token_type = 'Invalid input'
+
 
         elif char == ' ':
             end += 1
