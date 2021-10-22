@@ -73,7 +73,7 @@ def get_next_token(code):
                 token_type = 'Invalid number'
             elif not (code[end] in whitespaces or code[end] in symbols or code[end] == ' '):
                 end += 1
-                token_type = 'Invalid input'
+                token_type = 'Invalid number'
 
         elif char in whitespaces:
             token_type = 'WHITESPACE'

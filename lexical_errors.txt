@@ -1,1 +1,1 @@
-1.	(/, Invalid input) 
+1.	(/@, Invalid input) (S!, Invalid input) (223#, Invalid input) 
