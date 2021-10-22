@@ -215,5 +215,3 @@ if comment:
 save_tokens(tokens_file_content)
 save_errors(errors_file_content)
 save_symbol_table(identifiers)
-
-# v1.0
