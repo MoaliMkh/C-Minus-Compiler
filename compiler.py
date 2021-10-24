@@ -41,7 +41,7 @@ def get_next_token(code):
             end += 1
             while code[end] in letters or code[end] in digits:
                 end += 1
-            if not (code[end] in whitespaces or code[end] in symbols or code[end] == ' '):
+            if not (code[end] in whitespaces or code[end] in symbols or code[end] == ' ' or code[end] == '/'):
                 end += 1
                 token_type = 'Invalid input'
 
@@ -71,7 +71,7 @@ def get_next_token(code):
             if code[end] in letters:
                 end += 1
                 token_type = 'Invalid number'
-            elif not (code[end] in whitespaces or code[end] in symbols or code[end] == ' '):
+            elif not (code[end] in whitespaces or code[end] in symbols or code[end] == ' ' or code[end] == '/'):
                 end += 1
                 token_type = 'Invalid number'
 
